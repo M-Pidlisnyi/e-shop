@@ -5,11 +5,15 @@
     {% if product_list %}
 
         {% for product in product_list %}
-            <li>{{ product.name }}</li>
+            <li><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></li>
         {% endfor %}
 
      {% else %}
         <p>No products currently available</p>
     {% endif %}
+    
+    {% if user.is_authenticated %}
+    	<button> <a href="{% url 'create-order' %}"> new order</a> </button>
+    {% endif %} 
 
 {% endblock %}
