@@ -34,6 +34,7 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     discount_card_number = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     discount_value = models.DecimalField(max_digits=100, decimal_places=2)
+    order_history = models.ManyToManyField(Product, through="Order")
 
     class Meta:
         verbose_name = "Shop Customer"
