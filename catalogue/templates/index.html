@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Featured Products</h1>
+    {% if product_list %}
+
+        {% for product in product_list %}
+            <li>{{ product.name }}</li>
+        {% endfor %}
+
+     {% else %}
+        <p>No products currently available</p>
+    {% endif %}
+
+{% endblock %}
