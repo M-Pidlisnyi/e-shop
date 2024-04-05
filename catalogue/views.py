@@ -47,3 +47,9 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
 
         return HttpResponseRedirect("/")
+
+
+
+class OrderListView(ListView):
+    model = Order
+    template_name = "order_list.html"
