@@ -22,5 +22,6 @@ from django.urls import  reverse
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('catalogue.urls')),
-    path('catalogue/', include("catalogue.urls"))
+    path('catalogue/', include("catalogue.urls")),
+    path("accounts/",  include("django.contrib.auth.urls") )
 ]

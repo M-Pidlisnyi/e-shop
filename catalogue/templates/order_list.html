@@ -2,7 +2,7 @@
 
 {% block content %}
 	{% for object in object_list %}
-        <p>{{ object }}- ({{ object.customer.user.username }}) </p>
+        <p>{{ object }}- (price for one: {{ object.product.price }}) (discount: {{ object.customer.discount_value }}%) </p>
 	{% endfor %}
 
 {% endblock %}

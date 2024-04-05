@@ -2,6 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from decimal import Decimal
+
 from .models import Product, Order, Customer
 from .forms import CreateOrderForm
 
@@ -29,7 +32,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         if form.is_valid():
             print(form.cleaned_data)
 
-            customer,new = Customer.objects.get_or_create(user=request.user, defaults={"discount_value": 0.99})
+            customer,new = Customer.objects.get_or_create(user=request.user, defaults={"discount_value": Decimal(0.99)})
             print(customer)
             if new:
                 print("created new customer")
@@ -40,7 +43,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                 product=form.cleaned_data["product"],
                 customer=customer,
                 amount=form.cleaned_data["amount"],
-                price_with_discount= form.cleaned_data["product"].price - (form.cleaned_data["product"].price * customer.discount_value/100)
+                price_with_discount= (form.cleaned_data["product"].price - (form.cleaned_data["product"].price * customer.discount_value/100))*form.cleaned_data["amount"]
 
             )
 

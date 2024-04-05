@@ -1,0 +1,14 @@
+<header>
+    <nav>
+        <a>some stuff here</a>
+
+        <a style="float: right">|{{ user.username }}|</a>
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'logout' %}">{% csrf_token %} <button type="submit" style="float: right">Log out</button></form>
+        {% else %}
+            <a href="{% url 'login' %}" style="float: right">login</a>
+       {% endif %}
+    </nav>
+
+
+</header>
