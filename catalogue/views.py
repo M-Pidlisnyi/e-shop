@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -49,7 +50,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
 
 
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect(reverse("order-list"))
 
 
 
