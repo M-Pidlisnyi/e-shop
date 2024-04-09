@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from decimal import Decimal
 # Create your models here.
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -33,12 +34,15 @@ class Product(models.Model):
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     discount_card_number = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    discount_value = models.DecimalField(max_digits=100, decimal_places=2)
+    discount_value = models.DecimalField(max_digits=100, decimal_places=2, default=0.99)
     order_history = models.ManyToManyField(Product, through="Order")
 
     class Meta:
         verbose_name = "Shop Customer"
         verbose_name_plural = "Shop Customers"
+
+    def __str__(self):
+        return f"{self.user.username} card No.{self.discount_card_number}"
 
 
 class Order(models.Model):
