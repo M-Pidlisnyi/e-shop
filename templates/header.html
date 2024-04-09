@@ -33,12 +33,13 @@
                 <span>{{ user.username }}</span>
                 <form method="post" action="{% url 'logout' %}">{% csrf_token %} <button type="submit" > -> </button></form>
             {% else %}
-                <a href="{% url 'login' %}">login</a>
+                <button><a href="{% url 'login' %}">login</a></button>
+                <button><a href="{% url 'register' %}">sign up</a></button>
             {% endif %}
 
           <form class="d-flex" role="search">
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
+            <button  type="submit">Search</button>
           </form>
         </div>
       </div>

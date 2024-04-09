@@ -33,11 +33,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         if form.is_valid():
             print(form.cleaned_data)
 
-            customer,new = Customer.objects.get_or_create(user=request.user, defaults={"discount_value": Decimal(0.99)})
-            print(customer)
-            if new:
-                print("created new customer")
-
+            customer = Customer.objects.get(user=request.user, defaults={"discount_value": Decimal(0.99)})
 
 
             Order.objects.create(
