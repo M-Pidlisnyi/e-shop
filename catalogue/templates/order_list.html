@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-	{% for object in object_list %}
-        <p>{{ object }}- (price for one: {{ object.product.price }}) (discount: {{ object.customer.discount_value }}%) </p>
-	{% endfor %}
-
+    {% if not request.user.is_superuser %}
+        <h3>{{ request.user.username }}'s orders:</h3>
+        {% for order in current_customer_order_history %}
+            <p>{{ order }}- (price for one: {{ order.product.price }}) (discount: {{ order.customer.discount_value }}%) </p>
+        {% endfor %}
+    {% else %}
+            {% for order in desired_customer_order_history %}
+                <p>{{ order }}- (price for one: {{ order.product.price }}) (discount: {{ order.customer.discount_value }}%) </p>
+            {% endfor %}
+            
+            {% for customer in customers_list %}
+                <a href="{% url 'order-list' %}?customer={{ customer.user.username }}" >{{ customer.user.username }}</a>
+            {% endfor %}
+    {% endif %}
+    
 {% endblock %}

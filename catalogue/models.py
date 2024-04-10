@@ -52,7 +52,7 @@ class Order(models.Model):
     price_with_discount = models.DecimalField(max_digits=100, decimal_places=2, null=True, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     def __str__(self):
-        return f"{self.customer.user.get_full_name()} bought {self.amount} of {self.product} at {self.datetime} for {self.price_with_discount}"
+        return f"{self.customer.user.username} bought {self.amount} of {self.product} at {self.datetime} for {self.price_with_discount}"
 
     class Meta:
         ordering = ["-datetime"]

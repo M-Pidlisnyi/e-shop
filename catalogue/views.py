@@ -33,23 +33,44 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         if form.is_valid():
             print(form.cleaned_data)
 
-            customer = Customer.objects.get(user=request.user, defaults={"discount_value": Decimal(0.99)})
-
+            customer = Customer.objects.get(user=request.user)
+            product  = form.cleaned_data["product"]
+            amount   = form.cleaned_data["amount"]
 
             Order.objects.create(
-                product=form.cleaned_data["product"],
+                product=product,
                 customer=customer,
-                amount=form.cleaned_data["amount"],
-                price_with_discount= (form.cleaned_data["product"].price - (form.cleaned_data["product"].price * customer.discount_value/100))*form.cleaned_data["amount"]
+                amount=amount,
+                price_with_discount= (product.price - (product.price * customer.discount_value/100))*amount
 
             )
-
-
-
         return HttpResponseRedirect(reverse("order-list"))
+
+
 
 
 
 class OrderListView(ListView):
     model = Order
     template_name = "order_list.html"
+
+    def get(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        if not self.request.user.is_superuser:
+            return super().get(request, *args, **kwargs)
+
+        username = request.GET.get("customer", "misha")
+
+        customer = Customer.objects.select_related("user").get(user__username=username)
+
+        context = self.get_context_data()
+        context["desired_customer_order_history"] = Order.objects.filter(customer=customer).prefetch_related("customer", "product")
+        return render(request, self.template_name, context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_customer_order_history"] = Order.objects.filter(customer=self.request.user.customer).prefetch_related("customer", "product")
+        if self.request.user.is_superuser:
+            context["customers_list"] = Customer.objects.select_related("user").exclude(order_history=None)
+
+        return context
