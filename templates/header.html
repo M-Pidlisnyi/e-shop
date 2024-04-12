@@ -19,7 +19,9 @@
               </ul>
 
             {% if user.is_authenticated %}
-                <span>{{ user.username }}</span>
+                <img src="...">
+
+                <a href="{% url 'profile' pk=request.user.id %}"><span>{{ user.username }}</span></a>
                 <form method="post" action="{% url 'logout' %}">{% csrf_token %} <button type="submit" > -> </button></form>
             {% else %}
                 <button><a href="{% url 'login' %}">login</a></button>

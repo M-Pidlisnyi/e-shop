@@ -44,6 +44,18 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.user.username} card No.{self.discount_card_number}"
 
+    @property
+    def max_discount(self):
+        if self.user.is_staff:
+            return 99
+        return 50
+
+
+    def update_discount(self):
+        if self.discount_value < self.max_discount:
+            self.discount_value += Decimal(0.01)
+            self.save()
+
 
 class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_DEFAULT, default="deleted product")

@@ -4,11 +4,11 @@
     {% if not request.user.is_superuser %}
         <h3>{{ request.user.username }}'s orders:</h3>
         {% for order in current_customer_order_history %}
-            <p>{{ order }}- (price for one: {{ order.product.price }}) (discount: {{ order.customer.discount_value }}%) </p>
+            <p>{{ order }}- (undiscounted price for one: {{ order.product.price }})  </p>
         {% endfor %}
     {% else %}
             {% for order in desired_customer_order_history %}
-                <p>{{ order }}- (price for one: {{ order.product.price }}) (discount: {{ order.customer.discount_value }}%) </p>
+                <p>{{ order }}- (undiscounted price for one: {{ order.product.price }}) </p>
             {% endfor %}
             
             {% for customer in customers_list %}

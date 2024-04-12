@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>Welcome {{ customer.user.username }} your card number is {{ customer.discount_card_number }}</div>
+    <div>Your current discount is {{ customer.discount_value }}%</div>
+{% endblock %}

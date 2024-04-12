@@ -1,10 +1,10 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView, DetailView
 from django.contrib.auth.models import User
 from django.urls import  reverse_lazy
 from django.contrib.auth import login
 from django.http import HttpResponseRedirect
-
 
 class RegistrationView(CreateView):
     model = User
@@ -18,3 +18,10 @@ class RegistrationView(CreateView):
         login(self.request, self.object)
         return HttpResponseRedirect(self.success_url)
 
+class ProfileView(LoginRequiredMixin, DetailView):
+    model = User
+    template_name = "profile.html"
+    context_object_name = "customer"
+
+    def get_object(self, queryset=None):
+        return self.request.user.customer

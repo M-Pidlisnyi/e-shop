@@ -34,6 +34,9 @@ class CreateOrderView(LoginRequiredMixin, FormView):
             print(form.cleaned_data)
 
             customer = Customer.objects.get(user=request.user)
+
+
+
             product  = form.cleaned_data["product"]
             amount   = form.cleaned_data["amount"]
 
@@ -44,6 +47,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                 price_with_discount= (product.price - (product.price * customer.discount_value/100))*amount
 
             )
+            customer.update_discount()
         return HttpResponseRedirect(reverse("order-list"))
 
 
