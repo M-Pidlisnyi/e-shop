@@ -2,9 +2,10 @@
 
 {% block content %}
     {% if not request.user.is_superuser %}
+        You have {{ orders_num }} orders
         <h3>{{ request.user.username }}'s orders:</h3>
-        {% for order in current_customer_order_history %}
-            <p>{{ order }}- (undiscounted price for one: {{ order.product.price }})  </p>
+        {% for order, saving in order_history %}
+            <p>{{ order }}- (undiscounted price for one: {{ order.product.price }}). Saved: ${{ saving }} </p>
         {% endfor %}
     {% else %}
             {% for order in desired_customer_order_history %}

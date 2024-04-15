@@ -6,6 +6,9 @@ from decimal import Decimal
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
+    def get_absolute_url(self):
+        return f"/catalogue/category/{self.id}"
+
 
 class Product(models.Model):
     name = models.CharField(max_length=150)

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h3>{{ category.name }}</h3>
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{{ product.get_absolute_url }}">{{ product.name }}</a> ${{ product.price }}
+            </li>
+        {% endfor %}
+    </ul>
+        {% if avg_price %}
+        <p>Average price in category: ${{ avg_price|floatformat:-2 }}</p>
+        {% endif %}
+{% endblock %}
