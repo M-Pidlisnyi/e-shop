@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import ListView, DetailView, CreateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template import loader
 
 from decimal import Decimal
 
@@ -45,6 +46,8 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
     def get(self, request, *args, **kwargs):
         form = CreateOrderForm()
+        if "form" in kwargs:
+            form = kwargs["form"]
         return render(request, self.template_name, {"form": form})
     def post(self, request, *args, **kwargs):
         form = CreateOrderForm(request.POST)
@@ -66,7 +69,12 @@ class CreateOrderView(LoginRequiredMixin, FormView):
 
             )
             customer.update_discount()
-        return HttpResponseRedirect(reverse("order-list"))
+            return HttpResponseRedirect(reverse("order-list"))
+
+        kwargs["form"] = form
+        print(form.errors.as_data())
+        return self.get(request, *args, **kwargs)
+
 
 
 
@@ -108,6 +116,6 @@ class OrderListView(ListView):
         if self.request.user.is_superuser:
             customers_list = Customer.objects.prefetch_related("user").exclude(order_history=None)
             context["customers_list"] = customers_list
-            print(customers_list.explain())
+            # print(customers_list.explain())
 
         return context

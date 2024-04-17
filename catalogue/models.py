@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 import uuid
 from decimal import Decimal
@@ -33,6 +34,13 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name}({self.id}) - {self.category.name}({self.category.id})"
+
+    class Meta:
+        db_tablespace = "catalogue"
+        indexes = [
+            models.Index(fields=["price"], name="price_index")
+        ]
+
 
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -71,3 +79,10 @@ class Order(models.Model):
 
     class Meta:
         ordering = ["-datetime"]
+        db_tablespace = "catalogue"
+        indexes = [
+            models.Index(fields=["price_with_discount"], name="price_with_discount_index")
+        ]
+        constraints = [
+            models.CheckConstraint(check=Q(amount__gt=0), name="amount greater than 0")
+        ]

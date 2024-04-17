@@ -6,3 +6,6 @@ class CreateOrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ['product', 'amount']
+        error_messages = {
+            'amount': {"__all__": 'Amount must be greater than 0'}
+        }
