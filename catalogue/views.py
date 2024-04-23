@@ -19,6 +19,9 @@ class IndexView(ListView):
     def get_queryset(self):
         return Product.objects.annotate(order_num=Count('order')).filter(order_num__gt=0).order_by('-order_num')
 
+class ProductListView(ListView):
+    model = Product
+    template_name = "product_list.html"
 
 class ProductDetailView(DetailView):
     model = Product
@@ -45,9 +48,14 @@ class CreateOrderView(LoginRequiredMixin, FormView):
     raise_exception = True
 
     def get(self, request, *args, **kwargs):
-        form = CreateOrderForm()
-        if "form" in kwargs:
+
+        if "form" in kwargs:# if we came here from post request of same view (i.e. there was error creating order)
             form = kwargs["form"]
+        elif "product" in request.GET:# if we came here from "Buy" button in product list or details
+            form = CreateOrderForm(initial={"product": request.GET["product"]})
+        else:
+            form = CreateOrderForm()
+
         return render(request, self.template_name, {"form": form})
     def post(self, request, *args, **kwargs):
         form = CreateOrderForm(request.POST)

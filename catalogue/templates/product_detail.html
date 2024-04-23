@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ object }}
+    {{ product }}
     <br>
-    ${{ object.price }}
+    ${{ product.price }}
+    <div>
+     <a href="{% url 'create-order' %}?product={{ product.id }}" class="btn btn-primary">Buy</a>
+    </div>
 {% endblock %}

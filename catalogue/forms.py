@@ -1,4 +1,4 @@
-from django.forms import  ModelForm, ModelChoiceField
+from django.forms import  ModelForm, ModelChoiceField, IntegerField
 from .models import  Order, Product
 
 class CreateOrderForm(ModelForm):
@@ -6,6 +6,3 @@ class CreateOrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ['product', 'amount']
-        error_messages = {
-            'amount': {"__all__": 'Amount must be greater than 0'}
-        }

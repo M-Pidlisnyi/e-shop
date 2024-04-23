@@ -84,5 +84,5 @@ class Order(models.Model):
             models.Index(fields=["price_with_discount"], name="price_with_discount_index")
         ]
         constraints = [
-            models.CheckConstraint(check=Q(amount__gt=0), name="amount greater than 0")
+            models.CheckConstraint(check=Q(amount__gt=0), name="amount greater than 0", violation_error_message="Amount must be greater than zero")
         ]
