@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    {% if bag_items %}
+        <h5> bag items:</h5>
+        <ol>
+            {% for product, amount in bag_items %}
+                <li>
+                    {{ product.name }} - {{ amount }}
+                    <form method="post" action="{% url 'delete-from-bag' %}"  style="display: inline">
+                        {% csrf_token %}
+                        <input name="product_id" type="hidden" value="{{ product.id }}">
+                        <input type="submit" value="X" class="btn btn-danger">
+                    </form>
+                </li>
+            {% endfor %}
+        </ol>
+        {% if request.user.is_authenticated %}
+        	 <form method="post">
+                {% csrf_token %}
+                <button type="submit">Buy all</button>
+             </form>
+        {% else %}
+            <button type="submit"><a href="{% url 'login' %}?next={{ request.path }}">Log in to buy</a></button>
+        {% endif %}
+
+    {% else %}
+        <p>Your Shopping bag is empty</p>
+    {% endif %}
+{% endblock %}

@@ -16,6 +16,8 @@
                         <p class="card-text">{{ product.description }}</p>
 
                     <a href="{% url 'create-order' %}?product={{ product.id }}" class="btn btn-primary">Buy</a>
+                    {% include 'add_to_bag_form.html' %}
+
                 </div>
             </div>
         {% endfor %}
