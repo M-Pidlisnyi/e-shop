@@ -30,16 +30,25 @@
                 <img src="...">
 
                 <a href="{% url 'profile' pk=request.user.id %}"><span>{{ user.username }}</span></a>
-                <form method="post" action="{% url 'logout' %}">{% csrf_token %} <button type="submit" > -> </button></form>
+                <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+                    <button type="submit" onclick="return confirm('Your shopping bag will be emptied. Proceed?')"> -> </button>
+                </form>
             {% else %}
                 <button><a href="{% url 'login' %}">login</a></button>
                 <button><a href="{% url 'register' %}">sign up</a></button>
             {% endif %}
 
-          <form class="d-flex" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button  type="submit">Search</button>
-          </form>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button  type="submit">Search</button>
+            </form>
+
+
+            <a href="{% url 'bag' %}"><img src="..." alt="Shopping bag"></a>
+            <sup>
+                {{products_num}}
+            </sup>
+
         </div>
       </div>
     </nav>

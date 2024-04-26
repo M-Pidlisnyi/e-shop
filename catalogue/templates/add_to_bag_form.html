@@ -1,0 +1,6 @@
+<form method="post" action="{% url 'add-to-bag' %}" style="display: inline">
+        {% csrf_token %}
+        <input name="from_url" type="hidden" value="{{ request.path }}">
+        <input name="product_id" type="hidden" value="{{ product.id }}">
+        <button type="submit" class="btn btn-success">Add to bag</button>
+</form>

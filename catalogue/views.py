@@ -1,10 +1,11 @@
 from django.db.models import Count, Avg
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.views.generic import ListView, DetailView, CreateView, FormView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, FormView, TemplateView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template import loader
+
 
 from decimal import Decimal
 
@@ -45,7 +46,6 @@ class CategoryDetailView(DetailView):
 class CreateOrderView(LoginRequiredMixin, FormView):
     model = Order
     template_name = "create_order.html"
-    raise_exception = True
 
     def get(self, request, *args, **kwargs):
 
@@ -83,15 +83,10 @@ class CreateOrderView(LoginRequiredMixin, FormView):
         print(form.errors.as_data())
         return self.get(request, *args, **kwargs)
 
-
-
-
-
-
-class OrderListView(ListView):
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = "order_list.html"
-
+    raise_exception = True
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
         if not self.request.user.is_superuser:
@@ -127,3 +122,65 @@ class OrderListView(ListView):
             # print(customers_list.explain())
 
         return context
+
+
+class AddToBagView(RedirectView):
+    """
+        adds product to bag and immediately redirects to url where 'add to bag' button was pressed
+    """
+    def post(self, request, *args, **kwargs):
+        product_id = request.POST.get("product_id", None)
+        if product_id:
+            #prudct ids are saved in session like this: product_<id>: amount
+            key = "product_" + product_id
+            if key not in request.session:
+                request.session[key] = 1
+            else:
+                request.session[key] += 1
+
+
+        self.url = request.POST.get("from_url", reverse("home"))
+        return HttpResponseRedirect(self.url)
+
+class ShoppingBagView(TemplateView):
+    template_name = 'shopping_bag.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+
+        #filter out all other info from session, only product ids should be left
+        #'product_' = 7 characters
+        products_dict = {key[8:]:amount for key, amount in self.request.session.items() if key.startswith("product_")}
+        # print(f"{products_dict=}")
+
+        products = Product.objects.filter(id__in=products_dict.keys())
+        context["bag_items"] = [(p,a) for p,a in zip(products, products_dict.values())]
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        for product, amount in self.get_context_data()["bag_items"]:
+            customer = request.user.customer
+            Order.objects.create(
+                product=product,
+                amount=amount,
+                customer=customer,
+                price_with_discount= (product.price - (product.price * customer.discount_value/100))*amount)
+            customer.update_discount()
+        for key in list(request.session.keys()):
+            if key.startswith("product_"):
+                del request.session[key]
+        return HttpResponseRedirect(reverse("home"))
+
+
+class DeleteFromBagView(RedirectView):
+    url = reverse_lazy('bag')
+    def post(self, request, *args, **kwargs):
+        product_id = request.POST.get("product_id", None)
+        if product_id:
+            del request.session[product_id]
+        return HttpResponseRedirect(self.url)
+
+
+
